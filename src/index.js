@@ -97,7 +97,7 @@ Generate 3-5 specific search terms that would help find relevant academic resear
 
 Return only the search terms, one per line, without numbering or bullet points.`;
 
-      const response = await this.env.AI.run("@cf/meta/llama-3.3-70b-instruct", {
+      const response = await this.env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
         messages: [
           {
             role: "user",
@@ -260,21 +260,45 @@ Please provide a brief summary of the research landscape for this topic, highlig
   }
 }
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin":  "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+
 // CRITICAL: Export the default handler for ES Module format
 export default {
-  fetch: async (request, env, ctx) => {
-    // For non-Durable Object requests, handle them directly
-    const url = new URL(request.url);
-    
-    if (url.pathname === "/chat" || url.pathname === "/search" || url.pathname === "/") {
-      // Get or create a Durable Object instance
-      const id = env.RESEARCH_AGENT.idFromName("research-agent-singleton");
-      const stub = env.RESEARCH_AGENT.get(id);
-      
-      // Forward the request to the Durable Object
-      return stub.fetch(request);
+  async fetch(request, env) {
+    // Handle preflight
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: CORS_HEADERS });
     }
-    
-    return new Response("Research Paper Finder API", { status: 200 });
+
+    // Route to your Durable Object
+    const url = new URL(request.url);
+    if (url.pathname === "/chat" || url.pathname === "/search") {
+      // Forward to DO
+      const id   = env.RESEARCH_AGENT.idFromName("research-agent-singleton");
+      const stub = env.RESEARCH_AGENT.get(id);
+      const original = await stub.fetch(request)
+      const body     = await original.clone().text()
+      const headers  = new Headers(original.headers)
+
+      // Inject CORS
+      for (const [k,v] of Object.entries(CORS_HEADERS)) {
+        headers.set(k, v)
+      }
+
+      return new Response(body, {
+        status:  original.status,
+        headers: headers
+      })
+    }
+
+    // Default
+    const resp = new Response("Research Paper Finder API", { status: 200 });
+    Object.entries(CORS_HEADERS).forEach(([k,v]) => resp.headers.set(k,v));
+    return resp;
   }
 };
