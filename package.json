@@ -1,0 +1,30 @@
+{
+  "name": "cf_ai_research_paper_finder",
+  "version": "1.0.0",
+  "description": "AI-powered research paper finder using Cloudflare Agents",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "pages:dev": "wrangler pages dev ./frontend",
+    "pages:deploy": "wrangler pages deploy ./frontend",
+    "deploy:all": "npm run deploy && npm run pages:deploy",
+    "test": "echo 'Run the application and test with sample queries'",
+    "setup": "npm install && wrangler login"
+  },
+  "dependencies": {
+    "agents": "^0.1.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.1"
+  },
+  "keywords": [
+    "ai",
+    "research",
+    "papers",
+    "cloudflare",
+    "agents"
+  ],
+  "author": "AI Research Paper Finder",
+  "license": "MIT"
+}

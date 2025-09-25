@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Paper Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .user-message {
+            background: #4f46e5;
+            color: white;
+            margin-left: 20%;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: white;
+            border: 1px solid #e2e8f0;
+            margin-right: 20%;
+        }
+
+        .papers-list {
+            margin-top: 20px;
+        }
+
+        .paper-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .paper-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .paper-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .paper-authors {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .paper-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .paper-citations {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .paper-source {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: #4f46e5;
+        }
+
+        .send-button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-terms {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #0369a1;
+        }
+
+        .search-terms strong {
+            color: #1e40af;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .chat-container {
+                padding: 20px;
+            }
+            
+            .user-message, .ai-message {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 AI Research Paper Finder</h1>
+            <p>Discover relevant academic papers powered by AI</p>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai-message">
+                    <p>👋 Welcome! I'm your AI research assistant. Tell me what topic you'd like to explore, and I'll find the most relevant research papers for you, sorted by date and citation count.</p>
+                    <p><strong>Try asking:</strong> "machine learning in healthcare" or "quantum computing applications"</p>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Searching for research papers...
+            </div>
+            
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="queryInput" 
+                    placeholder="Enter your research topic..."
+                    autocomplete="off"
+                >
+                <button class="send-button" id="sendButton" onclick="sendQuery()">
+                    Search Papers
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://cf-ai-research-paper-finder.vaibhavmattoo1.workers.dev';
+        let sessionId = generateSessionId();
+        
+        function generateSessionId() {
+            return 'session_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        function addMessage(content, isUser = false, papers = null, searchTerms = null) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            
+            let messageContent = `<p>${content}</p>`;
+            
+            if (searchTerms && searchTerms.length > 0) {
+                messageContent += `<div class="search-terms">
+                    <strong>Search terms used:</strong> ${searchTerms.join(', ')}
+                </div>`;
+            }
+            
+            if (papers && papers.length > 0) {
+                messageContent += '<div class="papers-list">';
+                papers.forEach((paper, index) => {
+                    const publishedDate = paper.publishedDate ? new Date(paper.publishedDate).toLocaleDateString() : 'Unknown date';
+                    messageContent += `
+                        <div class="paper-item">
+                            <div class="paper-title">${paper.title}</div>
+                            <div class="paper-authors">${paper.authors.join(', ')}</div>
+                            <div class="paper-meta">
+                                <span class="paper-citations">📊 ${paper.citations} citations</span>
+                                <span class="paper-source">${paper.source}</span>
+                                <span>📅 ${publishedDate}</span>
+                            </div>
+                            ${paper.url ? `<a href="${paper.url}" target="_blank" style="color: #4f46e5; text-decoration: none; font-size: 0.9rem;">View Paper →</a>` : ''}
+                        </div>
+                    `;
+                });
+                messageContent += '</div>';
+            }
+            
+            messageDiv.innerHTML = messageContent;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showLoading(show = true) {
+            const loading = document.getElementById('loading');
+            const sendButton = document.getElementById('sendButton');
+            
+            if (show) {
+                loading.classList.add('show');
+                sendButton.disabled = true;
+                sendButton.textContent = 'Searching...';
+            } else {
+                loading.classList.remove('show');
+                sendButton.disabled = false;
+                sendButton.textContent = 'Search Papers';
+            }
+        }
+        
+        async function sendQuery() {
+            const input = document.getElementById('queryInput');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            // Add user message
+            addMessage(query, true);
+            input.value = '';
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        sessionId: sessionId
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Add AI response
+                addMessage(data.response, false, data.papers, data.searchTerms);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, I encountered an error while searching for papers. Please try again.', false);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Handle Enter key press
+        document.getElementById('queryInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendQuery();
+            }
+        });
+        
+        // Focus input on page load
+        document.getElementById('queryInput').focus();
+    </script>
+</body>
+</html>
