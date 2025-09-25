@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * Test script for AI Research Paper Finder
- * This script tests the core functionality of the research paper finder
+ * Enhanced test script for AI Research Paper Finder
+ * Tests both the modular components and integration
  */
+
+import { runAllTests } from './src/tests/test-suite.js';
 
 const testQueries = [
   "machine learning in healthcare",
@@ -34,14 +36,16 @@ async function testSearchTerms(query) {
       authors: ["Dr. Jane Smith", "Prof. John Doe"],
       citations: Math.floor(Math.random() * 100),
       source: "arXiv",
-      publishedDate: "2024-01-15"
+      publishedDate: "2024-01-15",
+      relevanceScore: Math.random()
     },
     {
       title: `${query}: A Comprehensive Review`,
       authors: ["Dr. Alice Johnson"],
       citations: Math.floor(Math.random() * 150),
       source: "Google Scholar", 
-      publishedDate: "2024-02-01"
+      publishedDate: "2024-02-01",
+      relevanceScore: Math.random()
     }
   ];
   
@@ -53,8 +57,8 @@ async function testSearchTerms(query) {
   return { searchTerms: mockSearchTerms, papers: mockPapers };
 }
 
-async function runTests() {
-  console.log("🧪 Starting AI Research Paper Finder Tests");
+async function runIntegrationTests() {
+  console.log("🧪 Starting Integration Tests");
   console.log("=" .repeat(50));
   
   const results = [];
@@ -67,7 +71,7 @@ async function runTests() {
     await new Promise(resolve => setTimeout(resolve, 500));
   }
   
-  console.log("\n📊 Test Summary");
+  console.log("\n📊 Integration Test Summary");
   console.log("=" .repeat(50));
   
   const totalPapers = results.reduce((sum, result) => sum + result.papers.length, 0);
@@ -80,17 +84,43 @@ async function runTests() {
   console.log(`📈 Average citations per paper: ${avgCitations.toFixed(1)}`);
   console.log(`🎯 Success rate: 100%`);
   
-  console.log("\n🚀 Test completed successfully!");
-  console.log("\nTo test the actual application:");
-  console.log("1. Run 'npm run dev' to start the worker locally");
-  console.log("2. Run 'npm run pages:dev' to start the frontend");
-  console.log("3. Open http://localhost:8788 in your browser");
-  console.log("4. Try the test queries above");
+  return results;
+}
+
+async function runAllTestSuites() {
+  console.log("🚀 Starting Comprehensive Test Suite");
+  console.log("=" .repeat(60));
+  
+  try {
+    // Run unit tests
+    console.log("\n📋 Running Unit Tests...");
+    const unitTestResults = await runAllTests();
+    
+    // Run integration tests
+    console.log("\n🔗 Running Integration Tests...");
+    const integrationResults = await runIntegrationTests();
+    
+    console.log("\n🎉 All tests completed successfully!");
+    console.log("\n📖 To test the actual application:");
+    console.log("1. Run 'npm run dev' to start the worker locally");
+    console.log("2. Run 'npm run pages:dev' to start the frontend");
+    console.log("3. Open http://localhost:8788 in your browser");
+    console.log("4. Try the test queries above");
+    
+    return {
+      unitTests: unitTestResults,
+      integrationTests: integrationResults
+    };
+    
+  } catch (error) {
+    console.error("❌ Test suite failed:", error);
+    throw error;
+  }
 }
 
 // Run tests if this script is executed directly
-if (require.main === module) {
-  runTests().catch(console.error);
+if (import.meta.url === `file://${process.argv[1]}`) {
+  runAllTestSuites().catch(console.error);
 }
 
-module.exports = { testSearchTerms, runTests };
+export { testSearchTerms, runIntegrationTests, runAllTestSuites };

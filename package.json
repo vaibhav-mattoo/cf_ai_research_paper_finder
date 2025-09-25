@@ -2,6 +2,7 @@
   "name": "cf_ai_research_paper_finder",
   "version": "1.0.0",
   "description": "AI-powered research paper finder using Cloudflare Agents",
+  "type": "module",
   "main": "src/index.js",
   "scripts": {
     "dev": "wrangler dev",
@@ -9,8 +10,11 @@
     "pages:dev": "wrangler pages dev ./frontend",
     "pages:deploy": "wrangler pages deploy ./frontend",
     "deploy:all": "npm run deploy && npm run pages:deploy",
-    "test": "echo 'Run the application and test with sample queries'",
-    "setup": "npm install && wrangler login"
+    "test": "node test.js",
+    "test:unit": "node --experimental-modules src/tests/test-suite.js",
+    "setup": "npm install && wrangler login",
+    "lint": "echo 'Linting not configured yet'",
+    "build": "echo 'Build not required for Workers'"
   },
   "dependencies": {
     "agents": "^0.1.0"
