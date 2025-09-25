@@ -5,6 +5,8 @@ import { ResearchAgent } from './agent/research-agent.js';
 import { CORS_HEADERS } from './config/constants.js';
 import { logger } from './utils/logger.js';
 
+export { ResearchAgent } from './agent/research-agent.js';
+
 // CRITICAL: Export the default handler for ES Module format
 export default {
   async fetch(request, env) {
