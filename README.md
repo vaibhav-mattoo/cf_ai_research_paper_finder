@@ -5,8 +5,7 @@ An intelligent research paper discovery platform powered by AI that helps resear
 ## 🎯 Demo
 
 ### Live Application
-**🌐 Website**: [[https://5b04b033.cf-ai-research-paper-finder-frontend.pages.dev/](https://5b04b04b033.cf-ai-research-paper-finder-frontend.pages.dev/)
-](https://5b04b033.cf-ai-research-paper-finder-frontend.pages.dev/)
+**🌐 Website**: https://230589b2.cf-ai-research-paper-finder-frontend.pages.dev
 ### Demo Video
 
 
