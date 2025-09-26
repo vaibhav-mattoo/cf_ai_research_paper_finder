@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Switching Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Mode Switching Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <p>1. Open the main application at <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></p>
+        <p>2. Perform a search (e.g., "machine learning")</p>
+        <p>3. Verify search results are visible</p>
+        <p>4. Click "Chat Mode" button</p>
+        <p>5. Click "Back to Search" button</p>
+        <p>6. Verify search results are still visible</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Behavior</h2>
+        <ul>
+            <li>✅ Search results should be visible after performing a search</li>
+            <li>✅ Chat mode should hide search results</li>
+            <li>✅ Returning to search mode should show search results again</li>
+            <li>✅ Papers should still be clickable and functional</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <p>Please test the mode switching functionality and report any issues.</p>
+        <button onclick="testModeSwitching()">Run Automated Test</button>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        async function testModeSwitching() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<p>Running tests...</p>';
+            
+            try {
+                // Test 1: Check if main app is accessible
+                const response = await fetch('http://localhost:8000');
+                if (response.ok) {
+                    resultsDiv.innerHTML += '<div class="test-section success">✅ Main application is accessible</div>';
+                } else {
+                    resultsDiv.innerHTML += '<div class="test-section error">❌ Main application is not accessible</div>';
+                    return;
+                }
+                
+                // Test 2: Check if search endpoint works
+                const searchResponse = await fetch('https://cf-ai-research-paper-finder.vaibhavmattoo1.workers.dev/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: 'test' })
+                });
+                
+                if (searchResponse.ok) {
+                    const searchData = await searchResponse.json();
+                    resultsDiv.innerHTML += `<div class="test-section success">✅ Search endpoint working (${searchData.papers?.length || 0} papers found)</div>`;
+                } else {
+                    resultsDiv.innerHTML += '<div class="test-section error">❌ Search endpoint failed</div>';
+                }
+                
+                resultsDiv.innerHTML += '<div class="test-section success">✅ Automated tests completed. Please manually test mode switching in the browser.</div>';
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test-section error">❌ Test failed: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

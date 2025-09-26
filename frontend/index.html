@@ -1070,7 +1070,7 @@
         function switchToChat() {
             currentMode = 'chat';
             document.querySelector('.search-section').style.display = 'none';
-            document.getElementById('resultsSection').style.display = 'none';
+            hideResultsSection();
             document.getElementById('chatSection').classList.add('show');
             document.getElementById('chatInput').focus();
             updateStats('Chat mode active');
@@ -1082,13 +1082,36 @@
             document.querySelector('.search-section').style.display = 'block';
             if (allPapers.length > 0) {
                 showResultsSection();
+                // Ensure papers are still displayed
+                restoreSearchResults();
             }
             document.getElementById('queryInput').focus();
             updateStats('Ready to search');
         }
 
+        function restoreSearchResults() {
+            if (allPapers.length > 0) {
+                const papersGrid = document.getElementById('papersGrid');
+                if (papersGrid.children.length === 0) {
+                    // Re-display papers if grid is empty
+                    allPapers.forEach((paper, index) => {
+                        const paperCard = createPaperCard(paper, index);
+                        papersGrid.appendChild(paperCard);
+                    });
+                }
+            }
+        }
+
         function showResultsSection() {
-            document.getElementById('resultsSection').classList.add('show');
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('show');
+            resultsSection.style.display = 'block'; // Ensure it's visible
+        }
+
+        function hideResultsSection() {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.remove('show');
+            resultsSection.style.display = 'none';
         }
 
         function showLoading(show = true) {

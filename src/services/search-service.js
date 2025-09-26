@@ -3,6 +3,7 @@
 import { CONFIG } from '../config/constants.js';
 import { ArxivService } from './arxiv-service.js';
 import { ScholarService } from './scholar-service.js';
+import { AcademicDBService } from './academic-db-service.js';
 import { PaperProcessor } from './paper-processor.js';
 import { logger } from '../utils/logger.js';
 import { ErrorHandler } from '../utils/error-handler.js';
@@ -11,6 +12,7 @@ export class SearchService {
   constructor() {
     this.arxivService = new ArxivService();
     this.scholarService = new ScholarService();
+    this.academicDBService = new AcademicDBService();
   }
 
   async searchResearchPapers(searchTerms) {
@@ -58,16 +60,23 @@ export class SearchService {
     const papers = [];
     
     try {
-      // Search arXiv
-      const arxivPapers = await this.arxivService.searchPapers(term);
-      papers.push(...arxivPapers);
+      // Search multiple sources in parallel for better results
+      const searchPromises = [
+        this.arxivService.searchPapers(term),
+        this.scholarService.searchPapers(term),
+        this.academicDBService.searchPapers(term)
+      ];
+
+      const results = await Promise.allSettled(searchPromises);
       
-      // Add delay to respect rate limits
-      await this.delay(CONFIG.SEARCH_DELAY_MS);
-      
-      // Search Google Scholar
-      const scholarPapers = await this.scholarService.searchPapers(term);
-      papers.push(...scholarPapers);
+      // Collect successful results
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          papers.push(...result.value);
+        } else {
+          logger.warn(`Search source ${index} failed for term "${term}"`, { error: result.reason.message });
+        }
+      });
       
       logger.info('Search term completed', { 
         term: term.substring(0, 50), 
