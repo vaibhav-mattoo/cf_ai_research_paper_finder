@@ -1,6 +1,6 @@
 # 🤖 AI Prompts Used to Build This Application
 
-This document contains the key AI prompts that were used to develop the AI Research Paper Finder application. These prompts demonstrate deep understanding of system design, architecture decisions, and specific implementation details.
+This document contains the key AI prompts that were used to develop the AI Research Paper Finder application.
 
 ## Prompt 1: Initial Architecture Design
 
