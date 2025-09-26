@@ -788,6 +788,19 @@
         let allPapers = [];
         let searchHistory = [];
 
+        // Global error handler for unhandled promise rejections
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            showNotification('An unexpected error occurred. Please try again.', 'error');
+            event.preventDefault(); // Prevent the default browser behavior
+        });
+
+        // Global error handler for uncaught exceptions
+        window.addEventListener('error', function(event) {
+            console.error('Uncaught error:', event.error);
+            showNotification('An unexpected error occurred. Please refresh the page.', 'error');
+        });
+
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
@@ -809,15 +822,30 @@
 
         function setupEventListeners() {
             // Search functionality
-            document.getElementById('searchButton').addEventListener('click', handleSearch);
+            document.getElementById('searchButton').addEventListener('click', function() {
+                handleSearch().catch(error => {
+                    console.error('Search button error:', error);
+                    showNotification('Search failed. Please try again.', 'error');
+                });
+            });
             document.getElementById('queryInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') handleSearch();
+                if (e.key === 'Enter') {
+                    handleSearch().catch(error => {
+                        console.error('Search enter error:', error);
+                        showNotification('Search failed. Please try again.', 'error');
+                    });
+                }
             });
 
             // Chat functionality
             document.getElementById('chatButton').addEventListener('click', switchToChat);
             document.getElementById('chatInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') handleChat();
+                if (e.key === 'Enter') {
+                    handleChat().catch(error => {
+                        console.error('Chat enter error:', error);
+                        showNotification('Chat failed. Please try again.', 'error');
+                    });
+                }
             });
             document.getElementById('backToSearch').addEventListener('click', switchToSearch);
 
@@ -826,7 +854,10 @@
                 chip.addEventListener('click', function() {
                     const query = this.dataset.query;
                     document.getElementById('queryInput').value = query;
-                    handleSearch();
+                    handleSearch().catch(error => {
+                        console.error('Example chip search error:', error);
+                        showNotification('Search failed. Please try again.', 'error');
+                    });
                 });
             });
 
@@ -1165,28 +1196,49 @@
         }
 
         function copyToClipboard(text) {
+            if (!navigator.clipboard) {
+                showNotification('Clipboard not supported in this browser', 'error');
+                return;
+            }
+            
             navigator.clipboard.writeText(text).then(() => {
                 showNotification('Title copied to clipboard!', 'success');
-            }).catch(() => {
+            }).catch((error) => {
+                console.error('Clipboard error:', error);
                 showNotification('Failed to copy to clipboard', 'error');
             });
         }
 
         function savePaper(paper) {
-            const savedPapers = JSON.parse(localStorage.getItem('savedPapers') || '[]');
-            savedPapers.push(paper);
-            localStorage.setItem('savedPapers', JSON.stringify(savedPapers));
-            showNotification('Paper saved!', 'success');
+            try {
+                const savedPapers = JSON.parse(localStorage.getItem('savedPapers') || '[]');
+                savedPapers.push(paper);
+                localStorage.setItem('savedPapers', JSON.stringify(savedPapers));
+                showNotification('Paper saved!', 'success');
+            } catch (error) {
+                console.error('Save paper error:', error);
+                showNotification('Failed to save paper', 'error');
+            }
         }
 
         function addToSearchHistory(query) {
-            searchHistory.unshift(query);
-            searchHistory = searchHistory.slice(0, 10); // Keep only last 10
-            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+            try {
+                searchHistory.unshift(query);
+                searchHistory = searchHistory.slice(0, 10); // Keep only last 10
+                localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+            } catch (error) {
+                console.error('Add to search history error:', error);
+                // Don't show notification for this as it's not critical
+            }
         }
 
         function loadSearchHistory() {
-            searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            try {
+                searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            } catch (error) {
+                console.error('Load search history error:', error);
+                searchHistory = []; // Fallback to empty array
+            }
         }
 
         function updateStats(message) {
