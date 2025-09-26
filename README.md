@@ -1,28 +1,21 @@
 # 🔬 AI Research Paper Finder
 
-An intelligent research paper discovery platform powered by AI that searches across multiple academic databases to find relevant research papers, sorted by date and citation count.
+An intelligent research paper discovery platform powered by AI that helps researchers find relevant academic papers based on their research queries and searches across multiple academic databases to find relevant research papers, sorted by date and citation count.
 
 ## 🎯 Demo
 
 ### Live Application
-**🌐 Website**: [https://5b04b033.cf-ai-research-paper-finder-frontend.pages.dev/](https://5b04b04b033.cf-ai-research-paper-finder-frontend.pages.dev/)
-
+**🌐 Website**: [[https://5b04b033.cf-ai-research-paper-finder-frontend.pages.dev/](https://5b04b04b033.cf-ai-research-paper-finder-frontend.pages.dev/)
+](https://5b04b033.cf-ai-research-paper-finder-frontend.pages.dev/)
 ### Demo Video
-[![Demo Video](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
-*Click the image above to watch the demo video*
+
+
+https://github.com/user-attachments/assets/2b3d4694-636f-42d1-8014-66276045467d
+
+
 
 ## ✨ Features
-
-### 🔍 **Multi-Source Academic Search**
-- **arXiv Integration**: Real-time access to arXiv.org papers with direct links
-- **Semantic Scholar API**: Academic papers with citation counts and metadata
-- **Crossref API**: DOI links to actual published papers
-- **OpenAlex API**: Comprehensive academic database coverage
-- **PubMed API**: Medical and scientific research papers
-- **DOAJ API**: Open access journal articles
-- **CORE API**: Aggregated open access research
-- **BASE API**: Bielefeld Academic Search Engine
 
 ### 🧠 **AI-Powered Search**
 - **Intelligent Query Processing**: Uses Llama 3.3 to generate optimized search terms
@@ -51,6 +44,16 @@ An intelligent research paper discovery platform powered by AI that searches acr
 - **Search Term Display**: Shows AI-generated search terms
 - **Contextual Responses**: AI provides relevant paper recommendations
 
+### 🔍 **Multi-Source Academic Search**
+- **arXiv Integration**: Real-time access to arXiv.org papers with direct links
+- **Semantic Scholar API**: Academic papers with citation counts and metadata
+- **Crossref API**: DOI links to actual published papers
+- **OpenAlex API**: Comprehensive academic database coverage
+- **PubMed API**: Medical and scientific research papers
+- **DOAJ API**: Open access journal articles
+- **CORE API**: Aggregated open access research
+- **BASE API**: Bielefeld Academic Search Engine
+
 ### 🎨 **Modern User Interface**
 - **Responsive Design**: Works perfectly on all devices
 - **Dark/Light Theme**: Toggle between themes with black/neon green color scheme
@@ -77,7 +80,7 @@ An intelligent research paper discovery platform powered by AI that searches acr
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/cf_ai_research_paper_finder.git
+git clone https://github.com/vaibhav-mattoo/cf_ai_research_paper_finder.git
 cd cf_ai_research_paper_finder
 ```
 
@@ -363,7 +366,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Cloudflare**: For providing the infrastructure
+- **Cloudflare**: For providing the infrastructure and inspiring me to make this
 - **arXiv**: For open access to research papers
 - **Semantic Scholar**: For academic paper metadata
 - **OpenAlex**: For comprehensive academic database
@@ -372,14 +375,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 ### **Issues**
-- **GitHub Issues**: [Report bugs and feature requests](https://github.com/yourusername/cf_ai_research_paper_finder/issues)
+- **GitHub Issues**: [Report bugs and feature requests](https://github.com/vaibhav-mattoo/cf_ai_research_paper_finder/issues)
 - **Documentation**: Check this README for common questions
-- **Community**: Join discussions in GitHub Discussions
 
 ### **Contact**
-- **Email**: your.email@example.com
-- **Twitter**: @yourusername
-- **LinkedIn**: [Your Profile](https://linkedin.com/in/yourusername)
+- **Email**: vmattoo2@illinois.edu
 
 ---
 
