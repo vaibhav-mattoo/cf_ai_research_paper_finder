@@ -2,6 +2,12 @@
 
 An AI-powered application that helps researchers find relevant academic papers based on their research queries. Built with Cloudflare Agents SDK, this application uses Llama 3.3 to process queries, search multiple academic databases, and return papers sorted by relevance, citations, and publication date.
 
+
+
+https://github.com/user-attachments/assets/e1643774-0653-4951-a248-069bb67c1e62
+
+
+
 ## ✨ Features
 
 - **AI-Powered Query Processing**: Uses Llama 3.3 to understand research queries and generate optimal search terms
