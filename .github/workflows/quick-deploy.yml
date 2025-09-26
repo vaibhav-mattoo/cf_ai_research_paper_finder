@@ -1,0 +1,62 @@
+name: Quick Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy Backend
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy ${{ github.event.inputs.environment == 'staging' && '--env staging' || '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy Frontend
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ github.event.inputs.environment == 'staging' && 'cf-ai-research-paper-finder-frontend-staging' || 'cf-ai-research-paper-finder-frontend' }}
+          directory: frontend
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deployment Complete
+        run: |
+          echo "✅ Deployment to ${{ github.event.inputs.environment }} complete!"
+          if [ "${{ github.event.inputs.environment }}" == "production" ]; then
+            echo "🌐 Production URLs:"
+            echo "Backend: https://cf-ai-research-paper-finder.vaibhavmattoo1.workers.dev"
+            echo "Frontend: https://5b04b033.cf-ai-research-paper-finder-frontend.pages.dev"
+          else
+            echo "🧪 Staging URLs:"
+            echo "Backend: https://cf-ai-research-paper-finder-staging.vaibhavmattoo1.workers.dev"
+            echo "Frontend: https://cf-ai-research-paper-finder-frontend-staging.pages.dev"
+          fi

@@ -333,6 +333,35 @@ node test-real-papers.js
 
 ## 🚀 Deployment
 
+### **Automatic CI/CD Pipeline**
+The project includes GitHub Actions workflows for automatic deployment:
+
+#### **Main CI/CD Pipeline** (`.github/workflows/ci-cd.yml`)
+- **Triggers**: Push to `main` (production) or `develop` (staging)
+- **Tests**: Runs all tests before deployment
+- **Staging**: Deploys to staging environment on `develop` branch
+- **Production**: Deploys to production on `main` branch
+- **Health Checks**: Verifies deployment success
+
+#### **Quick Deploy** (`.github/workflows/quick-deploy.yml`)
+- **Manual Trigger**: Deploy on-demand via GitHub Actions
+- **Environment Selection**: Choose production or staging
+- **Fast Deployment**: Skip tests for quick updates
+
+#### **Simple Deploy** (`.github/workflows/deploy.yml`)
+- **Basic Pipeline**: Simple deployment on push to main
+- **Test Integration**: Runs tests before deployment
+- **Notification**: Status updates on completion
+
+### **Required GitHub Secrets**
+Set up these secrets in your GitHub repository settings:
+
+```bash
+CLOUDFLARE_API_TOKEN    # Your Cloudflare API token
+CLOUDFLARE_ACCOUNT_ID   # Your Cloudflare account ID
+GITHUB_TOKEN           # Automatically provided by GitHub
+```
+
 ### **Cloudflare Workers**
 - **Global CDN**: 200+ edge locations
 - **Auto-scaling**: Handles traffic spikes
