@@ -334,22 +334,22 @@ node test-real-papers.js
 ## 🚀 Deployment
 
 ### **Automatic CI/CD Pipeline**
-The project includes GitHub Actions workflows for automatic deployment:
+The project includes GitHub Actions workflows for automatic backend deployment:
 
 #### **Main CI/CD Pipeline** (`.github/workflows/ci-cd.yml`)
 - **Triggers**: Push to `main` (production) or `develop` (staging)
 - **Tests**: Runs all tests before deployment
-- **Staging**: Deploys to staging environment on `develop` branch
-- **Production**: Deploys to production on `main` branch
-- **Health Checks**: Verifies deployment success
+- **Backend Deployment**: Deploys Cloudflare Worker automatically
+- **Health Checks**: Verifies backend deployment success
+- **Note**: Frontend deployment is manual (see below)
 
 #### **Quick Deploy** (`.github/workflows/quick-deploy.yml`)
-- **Manual Trigger**: Deploy on-demand via GitHub Actions
+- **Manual Trigger**: Deploy backend on-demand via GitHub Actions
 - **Environment Selection**: Choose production or staging
-- **Fast Deployment**: Skip tests for quick updates
+- **Backend Only**: Deploys Cloudflare Worker
 
 #### **Simple Deploy** (`.github/workflows/deploy.yml`)
-- **Basic Pipeline**: Simple deployment on push to main
+- **Basic Pipeline**: Simple backend deployment on push to main
 - **Test Integration**: Runs tests before deployment
 - **Notification**: Status updates on completion
 
@@ -368,9 +368,20 @@ GITHUB_TOKEN           # Automatically provided by GitHub
 - **Zero Cold Start**: Instant response times
 - **Built-in Security**: DDoS protection
 
+### **Manual Frontend Deployment**
+Since the automatic frontend deployment was causing issues, deploy the frontend manually:
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Deploy to Cloudflare Pages
+npx wrangler pages publish . --project-name="cf-ai-research-paper-finder-frontend"
+```
+
 ### **Cloudflare Pages**
 - **Static Site Hosting**: Fast global delivery
-- **Automatic Deployments**: Git integration
+- **Manual Deployments**: Use wrangler CLI
 - **Custom Domains**: Professional URLs
 - **Analytics**: Built-in performance monitoring
 

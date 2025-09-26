@@ -16,10 +16,9 @@ permissions:
   contents: read
   deployments: write
 
-
 jobs:
   deploy:
-    name: Deploy to ${{ github.event.inputs.environment }}
+    name: Deploy Backend to ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
     steps:
@@ -44,18 +43,9 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-      - name: Deploy Frontend
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ github.event.inputs.environment == 'staging' && 'cf-ai-research-paper-finder-frontend-staging' || 'cf-ai-research-paper-finder-frontend' }}
-          directory: frontend
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Deployment Complete
         run: |
-          echo "✅ Deployment to ${{ github.event.inputs.environment }} complete!"
+          echo "✅ Backend deployment to ${{ github.event.inputs.environment }} complete!"
           if [ "${{ github.event.inputs.environment }}" == "production" ]; then
             echo "🌐 Production URLs:"
             echo "Backend: https://cf-ai-research-paper-finder.vaibhavmattoo1.workers.dev"
@@ -63,5 +53,4 @@ jobs:
           else
             echo "🧪 Staging URLs:"
             echo "Backend: https://cf-ai-research-paper-finder-staging.vaibhavmattoo1.workers.dev"
-            echo "Frontend: https://cf-ai-research-paper-finder-frontend-staging.pages.dev"
           fi
